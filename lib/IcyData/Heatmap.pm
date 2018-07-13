@@ -58,10 +58,12 @@ has points => (
     builder  => '_build_points'
 );
 
+# YANICK SAYS: builders can also be inlined when they are 
+# simple
 has gradients => (
     is       => 'ro',
     init_arg => undef,
-    builder  => '_build_gradients'
+    default  => sub { [] },
 );
 
 has gradientColors => (
@@ -162,11 +164,6 @@ sub _build_gradient_image {
 sub _build_points {
     my @points = ();
     return \@points;
-}
-
-sub _build_gradients {
-    my @gradients = ();
-    return \@gradients;
 }
 
 sub _build_alpha {
