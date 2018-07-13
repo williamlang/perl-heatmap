@@ -155,8 +155,8 @@ sub _build_gradient_image {
         }
     }
 
-    open my $fh, '>', $self->gradientFile;
-    print $fh $gradient->png;
+    # YANICK SAYS: behold the majesty of Path::Tiny
+    path( $self->gradientFile )->spew_raw($gradient->png);
 }
 
 sub _build_points {
