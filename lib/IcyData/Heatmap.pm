@@ -1,8 +1,41 @@
 package IcyData::Heatmap;
 
+# YANICK SAYS:
+# The module can be used outside of `IcyData`, so I would suggest 
+# to name it `GD::Heatmap`. Likewise, the repo itself should be 
+# name perl-gd-heatmap or gd-heatmap 
+
+# YANICK SAYS:
+# The module must have documentation. At the minimum, it should look like: 
+
+=head1 NAME
+
+GD::Heatmap - generate a heatmap image off a dataset
+
+=head1 SYNOPSIS
+
+    use GD::Heatmap;
+
+    my $heatmap = GD::Heatmap->new(
+        data => \@dataset,
+        gradient_file => './foo',
+    );
+
+    $heatmap->save( 'heatmap.png' );
+
+=head1 DESCRIPTION 
+
+This module does blah blah blah blah...
+
+=cut
+
+
 use File::Temp qw/ tempfile tempdir /;
 use GD;
+
 use Moo;
+use MooX::HandlesVia;
+
 use Path::Tiny;
 use namespace::clean;
 use strictures 2;
@@ -13,6 +46,9 @@ has radius => (
     default => 15
 );
 
+# YANICK SAYS: 
+#   the usual convention in Perl is to 
+#   use snake_case. So that would be `gradient_file`.
 has gradientFile => (
     is       => 'ro',
     init_arg => undef,
@@ -22,18 +58,33 @@ has gradientFile => (
 has points => (
     is       => 'ro',
     init_arg => undef,
-    builder  => '_build_points'
+    # YANICK SAYS: simplification
+    default => sub { [] },
+    handles_via => 'Array',
+    handles => { add_point => 'push' },
 );
 
+# YANICK SAYS: builders can also be inlined when they are 
+# simple
 has gradients => (
     is       => 'ro',
     init_arg => undef,
-    builder  => '_build_gradients'
+    default  => sub { [] },
 );
 
 has gradientColors => (
     is      => 'ro',
-    default => qw/ blue green yellow red white/
+    # YANICK SAYS: BUG!
+    # this is not doing what you think. You want:
+    default => sub { [ qw/ blue green yellow red white/ ] },
+    # because if you do 
+    #   is => 'ro',
+    #   default => qw/ a b c/,
+    # Moo sees
+    #   is      => 'ro',
+    #   default => 'a',
+    #   b       => 'c'
+
 );
 
 has backgroundImg => (
@@ -122,18 +173,8 @@ sub _build_gradient_image {
         }
     }
 
-    open my $fh, '>', $self->gradientFile;
-    print $fh $gradient->png;
-}
-
-sub _build_points {
-    my @points = ();
-    return \@points;
-}
-
-sub _build_gradients {
-    my @gradients = ();
-    return \@gradients;
+    # YANICK SAYS: behold the majesty of Path::Tiny
+    path( $self->gradientFile )->spew_raw($gradient->png);
 }
 
 sub _build_alpha {
@@ -181,11 +222,6 @@ sub _build_heatmap {
     }
 
     return $heatmap;
-}
-
-sub add_point {
-    my ($self, %point) = @_;
-    push @{ $self->points }, \%point;
 }
 
 sub save {
