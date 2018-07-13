@@ -32,7 +32,10 @@ This module does blah blah blah blah...
 
 use File::Temp qw/ tempfile tempdir /;
 use GD;
+
 use Moo;
+use MooX::HandlesVia;
+
 use Path::Tiny;
 use namespace::clean;
 use strictures 2;
@@ -57,6 +60,8 @@ has points => (
     init_arg => undef,
     # YANICK SAYS: simplification
     default => sub { [] },
+    handles_via => 'Array',
+    handles => { add_point => 'push' },
 );
 
 # YANICK SAYS: builders can also be inlined when they are 
@@ -217,11 +222,6 @@ sub _build_heatmap {
     }
 
     return $heatmap;
-}
-
-sub add_point {
-    my ($self, %point) = @_;
-    push @{ $self->points }, \%point;
 }
 
 sub save {
