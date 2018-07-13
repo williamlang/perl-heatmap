@@ -55,7 +55,8 @@ has gradientFile => (
 has points => (
     is       => 'ro',
     init_arg => undef,
-    builder  => '_build_points'
+    # YANICK SAYS: simplification
+    default => sub { [] },
 );
 
 # YANICK SAYS: builders can also be inlined when they are 
@@ -169,11 +170,6 @@ sub _build_gradient_image {
 
     # YANICK SAYS: behold the majesty of Path::Tiny
     path( $self->gradientFile )->spew_raw($gradient->png);
-}
-
-sub _build_points {
-    my @points = ();
-    return \@points;
 }
 
 sub _build_alpha {
