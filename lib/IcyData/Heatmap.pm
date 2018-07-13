@@ -68,7 +68,17 @@ has gradients => (
 
 has gradientColors => (
     is      => 'ro',
-    default => qw/ blue green yellow red white/
+    # YANICK SAYS: BUG!
+    # this is not doing what you think. You want:
+    default => sub { [ qw/ blue green yellow red white/ ] },
+    # because if you do 
+    #   is => 'ro',
+    #   default => qw/ a b c/,
+    # Moo sees
+    #   is      => 'ro',
+    #   default => 'a',
+    #   b       => 'c'
+
 );
 
 has backgroundImg => (
