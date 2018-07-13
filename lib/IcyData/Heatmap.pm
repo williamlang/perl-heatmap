@@ -1,5 +1,35 @@
 package IcyData::Heatmap;
 
+# YANICK SAYS:
+# The module can be used outside of `IcyData`, so I would suggest 
+# to name it `GD::Heatmap`. Likewise, the repo itself should be 
+# name perl-gd-heatmap or gd-heatmap 
+
+# YANICK SAYS:
+# The module must have documentation. At the minimum, it should look like: 
+
+=head1 NAME
+
+GD::Heatmap - generate a heatmap image off a dataset
+
+=head1 SYNOPSIS
+
+    use GD::Heatmap;
+
+    my $heatmap = GD::Heatmap->new(
+        data => \@dataset,
+        gradient_file => './foo',
+    );
+
+    $heatmap->save( 'heatmap.png' );
+
+=head1 DESCRIPTION 
+
+This module does blah blah blah blah...
+
+=cut
+
+
 use File::Temp qw/ tempfile tempdir /;
 use GD;
 use Moo;
@@ -13,6 +43,9 @@ has radius => (
     default => 15
 );
 
+# YANICK SAYS: 
+#   the usual convention in Perl is to 
+#   use snake_case. So that would be `gradient_file`.
 has gradientFile => (
     is       => 'ro',
     init_arg => undef,
